@@ -33,7 +33,7 @@ const Header = () => {
             photoURL: photoURL,
           })
         );
-        navigate("/browse");
+        navigate("/browse"); 
       } else {
         dispatch(removeUser());
         navigate("/");
@@ -44,7 +44,7 @@ const Header = () => {
     return () => unsubscribe();
   }, []);
 
-  const handleGptSearchClick = () => {
+  const handleGptSearchClick = () => { 
     // Toggle GPT Search
     dispatch(toggleGptSearchView());
   };
@@ -67,7 +67,7 @@ const Header = () => {
                 <option key={lang.identifier} value={lang.identifier}>
                   {lang.name}
                 </option>
-              ))}
+              ))} 
             </select>
           )}
           <button

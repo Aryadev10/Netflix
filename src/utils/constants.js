@@ -8,7 +8,7 @@ export const USER_AVATAR =
     method: 'GET',
     headers: {
       accept: 'application/json',
-      Authorization: "Bearer"+ process.env.REACT_APP_TMDB_KEY,
+      Authorization: 'Bearer ' + process.env.REACT_APP_THEMOVIEDB_BEARER_TOKEN 
     }
   };
 
@@ -23,4 +23,4 @@ export const USER_AVATAR =
     { identifier: "spanish", name: "Spanish" },
   ];
 
- export const OPENAI_KEY=process.env.REACT_APP_OPENAI_KEY;
+ export const GEMINI_KEY =process.env.REACT_APP_GEMINI_KEY ;

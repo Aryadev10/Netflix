@@ -1,4 +1,6 @@
-import openai from "../utils/openai";
+//import openai from "../utils/openai";
+// ❌ import openai from "../utils/openai";
+import genAI from "../utils/openai";
 import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import lang from "../utils/languageConstants";
@@ -21,46 +23,76 @@ const GptSearchBar = () => {
     const json = await data.json();
 
     return json.results;
-  };
-
+  }; 
+  // for gemini api
   const handleGptSearchClick = async () => {
-    console.log(searchText.current.value);
-    // Make an API call to GPT API and get Movie Results
+  console.log(searchText.current.value);
 
-    const gptQuery =
-      "Act as a Movie Recommendation system and suggest some movies for the query : " +
-      searchText.current.value +
-      ". only give me names of 5 movies, comma seperated like the example result given ahead. Example Result: Gadar, Sholay, Don, Golmaal, Koi Mil Gaya";
+  const gptQuery =
+    "Act as a Movie Recommendation system and suggest some movies for the query : " +
+    searchText.current.value +
+    ". only give me names of 5 movies, comma seperated like the example result given ahead. Example Result: Gadar, Sholay, Don, Golmaal, Koi Mil Gaya";
 
-    const gptResults = await openai.chat.completions.create({
-      messages: [{ role: "user", content: gptQuery }],
-      model: "gpt-3.5-turbo",
-    });
+  try {
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const gptResults = await model.generateContent(gptQuery);
+    const responseText = gptResults.response.text();
 
-    if (!gptResults.choices) {
-      // TODO: Write Error Handling
-    }
+    if (!responseText) return;
 
-    console.log(gptResults.choices?.[0]?.message?.content);
+    console.log(responseText);
 
-    // Andaz Apna Apna, Hera Pheri, Chupke Chupke, Jaane Bhi Do Yaaro, Padosan
-    const gptMovies = gptResults.choices?.[0]?.message?.content.split(",");
-
-    // ["Andaz Apna Apna", "Hera Pheri", "Chupke Chupke", "Jaane Bhi Do Yaaro", "Padosan"]
-
-    // For each movie I will search TMDB API
+    const gptMovies = responseText.split(",").map((m) => m.trim());
 
     const promiseArray = gptMovies.map((movie) => searchMovieTMDB(movie));
-    // [Promise, Promise, Promise, Promise, Promise]
-
     const tmdbResults = await Promise.all(promiseArray);
-
-    console.log(tmdbResults);
 
     dispatch(
       addGptMovieResult({ movieNames: gptMovies, movieResults: tmdbResults })
     );
-  };
+  } catch (err) {
+    console.error("Gemini API Error:", err);
+  }
+};
+   // for open ai api key
+  // const handleGptSearchClick = async () => {
+  //   console.log(searchText.current.value);
+  //   // Make an API call to GPT API and get Movie Results
+
+  //   const gptQuery =
+  //     "Act as a Movie Recommendation system and suggest some movies for the query : " +
+  //     searchText.current.value +
+  //     ". only give me names of 5 movies, comma seperated like the example result given ahead. Example Result: Gadar, Sholay, Don, Golmaal, Koi Mil Gaya";
+
+  //   const gptResults = await openai.chat.completions.create({
+  //     messages: [{ role: "user", content: gptQuery }],
+  //     model: "gpt-3.5-turbo",
+  //   });
+
+  //   if (!gptResults.choices) {
+  //     // TODO: Write Error Handling
+  //   }
+
+  //   console.log(gptResults.choices?.[0]?.message?.content);
+
+  //   // Andaz Apna Apna, Hera Pheri, Chupke Chupke, Jaane Bhi Do Yaaro, Padosan
+  //   const gptMovies = gptResults.choices?.[0]?.message?.content.split(",");
+
+  //   // ["Andaz Apna Apna", "Hera Pheri", "Chupke Chupke", "Jaane Bhi Do Yaaro", "Padosan"]
+
+  //   // For each movie I will search TMDB API
+
+  //   const promiseArray = gptMovies.map((movie) => searchMovieTMDB(movie));
+  //   // [Promise, Promise, Promise, Promise, Promise]
+
+  //   const tmdbResults = await Promise.all(promiseArray);
+
+  //   console.log(tmdbResults);
+
+  //   dispatch(
+  //     addGptMovieResult({ movieNames: gptMovies, movieResults: tmdbResults })
+  //   );
+  // };
 
   return (
     <div className="pt-[35%] md:pt-[10%] flex justify-center">
@@ -85,3 +117,4 @@ const GptSearchBar = () => {
   );
 };
 export default GptSearchBar;
+

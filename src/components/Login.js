@@ -10,12 +10,12 @@ import { auth } from "../utils/firebase";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import { BG_URL, USER_AVATAR } from "../utils/constants";
-
+ 
 const Login = () => {
   const [isSignInForm, setIsSignInForm] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
   const dispatch = useDispatch();
-
+ 
   const name = useRef(null);
   const email = useRef(null);
   const password = useRef(null);
@@ -42,7 +42,7 @@ const Login = () => {
               const { uid, email, displayName, photoURL } = auth.currentUser;
               dispatch(
                 addUser({
-                  uid: uid,
+                  uid: uid, 
                   email: email,
                   displayName: displayName,
                   photoURL: photoURL,
