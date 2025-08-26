@@ -24,3 +24,4 @@ export const USER_AVATAR =
   ];
 
  export const GEMINI_KEY =process.env.REACT_APP_GEMINI_KEY ;
+ export const Firebase_key= process.env.REACT_APP_FIREBASE_KEY;
